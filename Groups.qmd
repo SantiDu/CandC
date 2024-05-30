@@ -1,15 +1,21 @@
 ---
-title: "group pro"
-format: html
+title: "group project"
+format: pdf
 editor: visual
 ---
 
+Import packages, set seeds.
 ```{r}
 library(tidyverse)
 
+set.seed(1)
+```
+
+Read data, rename columns
+```{r}
 df = read.csv("CommViolPredUnnormalizedData.txt", header = F)
 
-names = c(
+variables = c(
  'communityname',
  'state',
  'countyCode',
@@ -158,17 +164,22 @@ names = c(
  'ViolentCrimesPerPop',
  'nonViolPerPop'
  )
+
+names(df) = variables
 ```
 
-
-
-
-
+Filter out data where the target is missing:
 ```{r}
-apply(df, 2, \(x) sum(x == "?")) / nrow(df)
+df = df[df["ViolentCrimesPerPop"] != "?", ]
 ```
+
+Initial train test split
 ```{r}
-apply(df, 2, sd)
+idx_test = sample(1:nrow(df))[1:floor(nrow(df) * 0.2)]
+
+train_set = df[-idx_test, ]
+test_set = df[idx_test, ]
 ```
+
 
 
